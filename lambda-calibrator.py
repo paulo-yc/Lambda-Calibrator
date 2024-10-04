@@ -44,6 +44,19 @@ alfa = model.coef_[0]
 beta = model.intercept_
 print(f'Alfa: {alfa}, Beta: {beta}')
 
+# polynomial degree
+degree = 2 
+# making pipeline
+model_poly = make_pipeline(PolynomialFeatures(degree), LinearRegression())
+# fitting to polynomial model
+model_poly.fit(X, Y)
+# predicting output
+Y_poly_pred = model_poly.predict(X)
+
+# Score
+r2 = model_poly.score(X, Y)
+print(f"Score (R²) degree{degree}: {r2}")
+
 #plot comparison
 fig, axs = plt.subplots(2,1,figsize=(10,6))   
 axs[0].set_title("Experimental data (.csv)")
@@ -56,6 +69,10 @@ axs[1].legend()
 axs[1].grid(True)
 
 axs[1].plot(model.predict(X),label="Lambda Calibr.")
+axs[1].legend()
+axs[1].grid(True)
+
+axs[1].plot(model_poly.predict(X),label=f"Lambda Calibr. degree{degree}")
 axs[1].legend()
 axs[1].grid(True)
 
