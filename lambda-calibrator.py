@@ -3,7 +3,8 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.linear_model import LinearRegression
-
+from sklearn.preprocessing import PolynomialFeatures
+from sklearn.pipeline import make_pipeline
 
 import pandas as pd
 
@@ -16,9 +17,12 @@ endCol = 830
 df['lambdaA'] = df['lambdaA'][startCol:endCol]
 df['pgbkA_In'] = df['pgbkA_In'][startCol:endCol]
 
+#rolling mean window
+rmw = 10
+
 #filtering (rolling mean)
-df['A'] = df['lambdaA'].rolling(window=10).mean()
-df['B'] = df['pgbkA_In'].rolling(window=10).mean()
+df['A'] = df['lambdaA'].rolling(window=rmw).mean()
+df['B'] = df['pgbkA_In'].rolling(window=rmw).mean()
 
 # Redefining X Y filtered (Removing NaN)
 df_filtrado = df.dropna(subset=['A', 'B'])
@@ -47,11 +51,11 @@ axs[0].plot(df["RPM"][startCol:endCol],label="RPM")
 axs[0].legend()    
 axs[0].grid(True)
 
-axs[1].plot(df["pgbkA_In"].rolling(window=10).mean(),label="Lambda FT")
+axs[1].plot(df["pgbkA_In"].rolling(window=rmw).mean().shift(-(rmw-1)),label="Lambda FT")
 axs[1].legend()
 axs[1].grid(True)
 
-axs[1].plot(df["lambdaA"].rolling(window=10).mean()*alfa + beta,label="Lambda Calibr.")
+axs[1].plot(model.predict(X),label="Lambda Calibr.")
 axs[1].legend()
 axs[1].grid(True)
 
