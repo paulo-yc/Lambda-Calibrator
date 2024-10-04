@@ -16,26 +16,28 @@ endCol = 830
 df['lambdaA'] = df['lambdaA'][startCol:endCol]
 df['pgbkA_In'] = df['pgbkA_In'][startCol:endCol]
 
-
-# Linear regression
+#filtering (rolling mean)
 df['A'] = df['lambdaA'].rolling(window=10).mean()
 df['B'] = df['pgbkA_In'].rolling(window=10).mean()
-# Remover possíveis valores NaN resultantes da média móvel
+
+# Redefining X Y filtered (Removing NaN)
 df_filtrado = df.dropna(subset=['A', 'B'])
+X = df_filtrado[['A']]  # (2D) independent variable
+Y = df_filtrado['B']   # dependent variable
 
-# Redefinir X e Y com os dados filtrados
-X = df_filtrado[['A']]  # Variável independente (formato 2D)
-Y = df_filtrado['B']   # Variável dependente
-
+# Linear regression
 model = LinearRegression()
 
 # fitting to the model
 model.fit(X, Y)
 
-# Obtendo os coeficientes alfa e beta
-alfa = model.coef_[0]  # Coeficiente de inclinação (alfa)
-beta = model.intercept_  # Intercepto (beta)
+# Score
+r2 = model.score(X, Y)
+print(f"Score (R²): {r2}")
 
+# Getting alfa and beta
+alfa = model.coef_[0] 
+beta = model.intercept_
 print(f'Alfa: {alfa}, Beta: {beta}')
 
 #plot comparison
